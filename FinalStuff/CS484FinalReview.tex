@@ -85,12 +85,17 @@ We can use \textbf{Pearson's correlation coefficient} (often denoted using $\rho
 
 \section{Impurity Measures}
 
+\subsection{Multi-way split}: Use as many partitions as distinct values, so we may get more than two nodes for a parent node
+
 \subsection{Gini}
 The Gini index is defined as $1-\sum_{i=0}^{c-1} [p(i|t)]^2$ where $c$ is the number of classes and $p(i|t)$ denotes the fraction of records belonging to class $i$ at a given node $t$.
 For multiway split, we calculate using the weighted average for each category.
 
 \subsection{Entropy}
 Entropy is defined as $-\sum_{i=0}^{c-1} p(i|t) \log_2 p(i|t)$ where $c$ is the number of classes and $p(i|t)$ denotes the fraction of records belonging to class $i$ at a given node $t$. (We consider $0 \log_2 0 = 0$ for entropy calculations.)
+
+\subsection{Classification Error}
+Clearly just $1-\max_i [p(i|t)]$
 
 \subsection{Gain}
 The gain can be found using a formula:
@@ -101,10 +106,10 @@ where $I(.)$ is the impurity measure of a given node, $N$ is the number of recor
 Gain is called \textbf{information gain} when using entropy as the impurity measure.
 
 
-\section{Bayes, the theorem}
-One standard form:
+\section{Conditional probability}
+
 \begin{equation*}
-P(A\mid B)={\frac {P(B\mid A)\,P(A)}{P(B\mid A)P(A)+P(B\mid \neg A)P(\neg A)}}
+ P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)} = \frac{P(B\mid A)\,P(A)}{P(B\mid A)P(A)+P(B\mid \neg A)P(\neg A)} 
 \end{equation*}
 
 \section{Naive Bayes}
@@ -124,171 +129,148 @@ where $n$ is the total number of instances from class $y_j$, $n_c$ is the number
 
 \section{Association rules}
 
-In order to select interesting rules from the set of all possible association rules, constraints on various measures of significance and interest are used. The best-known constraints are minimum thresholds on support and confidence.
 
-Rule Evaluation Metrics
-? Support (s)
-‹ Fraction of transactions that contain
-both X and Y
-? Confidence (c)
-‹ Measures how often items in Y
-appear in transactions that
-contain X
+\subsection{Rule Evaluation Metrics}
+\textbf{Support} (s) is the proportion of transactions that contain both $X$ and $Y$
 
-Apriori principle:
-? If an itemset is frequent, then all of its subsets must also
+\textbf{Confidence} (c) Measures how often items in $Y$ appear in transactions that contain $X$
+
+The difference between these two is just whether the denominator is all transactions or all transactions that contain X
+
+\subsection{Apriori principle}
+If an itemset is frequent, then all of its subsets must also
 be frequent
 
 
-Dimensionality Reduction: PCA
-O Goal is to find a projection that captures the
-largest amount of variation in data
+\subsection{Dimensionality Reduction}: 
+PCA works to find a projection (some set of linearly independent vectors) that captures the largest amount of variation in data
 
-Minimum Description Length (MDL)
-
-Cost(Model,Data) = Cost(Data|Model) + Cost(Model)
-? Cost is the number of bits needed for encoding.
-? Search for the least costly model.
-O Cost(Data|Model) encodes the misclassification errors.
-O Cost(Model) uses node encoding (number of children)
-plus splitting condition encoding.
+\subsection{Minimum Description Length (MDL)}
+We seek to minimize how much information must be transmitted to describe a whole data set. We can send only attribute values $x$ and a classification rule along with info about where the rule fails to make this work. Thus we find the classification rule which minimizes this description length
 
 
-Rule Coverage and Accuracy
-O Coverage of a rule:
-? Fraction of records
+\section{Rule-Based Classifiers}
+
+\subsection{Rule Coverage and Accuracy}
+\textbf{Coverage} of a rule:
+Fraction of records
 that satisfy the
 antecedent of a rule
-O Accuracy of a rule:
-? Fraction of records
+
+\textbf{Accuracy} of a rule:
+Fraction of records
 that satisfy both the
 antecedent and
 consequent of a
 rule
 
 
-Characteristics of Rule-Based Classifier
-O Mutually exclusive rules
-? Classifier contains mutually exclusive rules if
-the rules are independent of each other
-? Every record is covered by at most one rule
-O Exhaustive rules
-? Classifier has exhaustive coverage if it
-accounts for every possible combination of
-attribute values
-? Each record is covered by at least one rule
+\subsection{Mutually exclusive rules}
+Classifier contains mutually exclusive rules if
+the rules are independent of each other; every record is covered by at most one rule
 
-Nearest-Neighbor Classifiers
-O Requires three things
-? The set of stored records
-? Distance Metric to compute
+
+\subsection{Exhaustive rules}
+Classifier has exhaustive coverage if it
+accounts for every possible combination of
+attribute values; each record is covered by at least one rule
+
+\subsection{Nearest-Neighbor Classifiers}
+Requires:
+\begin{itemize}
+  \item The set of stored records
+\item Distance Metric to compute
 distance between records
-? The value of k, the number of
-nearest neighbors to retrieve
-O To classify an unknown record:
-? Compute distance to other
+\item The value of $k$, the number of
+nearest neighbors to retrieve 
+\end{itemize}
+To classify an unknown record:
+\begin{itemize}
+\item Compute distance to other
 training records
-? Identify k nearest neighbors
-? Use class labels of nearest
+\item Identify k nearest neighbors
+\item Use class labels of nearest
 neighbors to determine the
 class label of unknown record
-(e.g., by taking majority vote)
-
-O Compute distance between two points:
-? Euclidean distance
-O Determine the class from nearest neighbor list
-? take the majority vote of class labels among
-the k-nearest neighbors
-? Weigh the vote according to distance
-‹ weight factor, w = 1/d2
+(e.g., by taking majority vote, sometimes weighting according to $1/d^2$)
+\end{itemize}
 
 
-Bagging
-O Sampling with replacement
-Build classifier on each bootstrap sample
-O Each sample has probability (1 ? 1/n)n of being
-selected
 
-Boosting
-O An iterative procedure to adaptively change
-distribution of training data by focusing more on
-previously misclassified records
-? Initially, all N records are assigned equal
-weights
-? Unlike bagging, weights may change at the
-end of boosting round
-Records that are wrongly classified will have their
-weights increased
-O Records that are classified correctly will have
+\subsection{Bagging}
+Bootstrap by sampling with replacement and build classifier on each bootstrap sample
+
+
+\subsection{Boosting}
+Initially, all N records are assigned equal
+weights. Records that are wrongly classified will have their
+weights increased, while records that are classified correctly will have
 their weights decreased
 
 
-What is Cluster Analysis?
-O Finding groups of objects such that the objects in a group
-will be similar (or related) to one another and different
-from (or unrelated to) the objects in other groups
+\section{Cluster Analysis}
 
-A clustering is a set of clusters
-
-Center-based
-? A cluster is a set of objects such that an object in a cluster is
-closer (more similar) to the ?center? of a cluster, than to the
+\subsection{Center-based Cluster}
+A cluster is a set of objects such that an object in a cluster is
+closer (more similar) to the center of a cluster, than to the
 center of any other cluster
-? The center of a cluster is often a centroid, the average of all
-the points in the cluster, or a medoid, the most ?representative?
+
+These are often centroids, the average of all
+the points in the cluster, or a medoid, the most ``representative''
 point of a cluster 
 
-Contiguous Cluster (Nearest neighbor or
-Transitive)
-? A cluster is a set of points such that a point in a cluster is
+\textbf{K-means Clustering} is a partitional clustering approach where each cluster is associated with a centroid (center point) and each point is assigned to the cluster with the closest
+centroid.
+The Number of clusters, $K$, must be specified. The basic algorithm is very simple: just pick some centroids at random, assign points to the closest centroid, recompute the centroids, and keep going until the centroids don't change.
+
+\subsection{Contiguous Cluster}
+A cluster is a set of points such that a point in a cluster is
 closer (or more similar) to one or more other points in the
 cluster than to any point not in the cluster.
 
-Density-based
-? A cluster is a dense region of points, which is separated by
-low-density regions, from other regions of high density.
-? Used when the clusters are irregular or intertwined, and when
+\subsection{Density-based Cluster}
+A cluster is a dense region of points, which is separated by
+low-density regions, from other regions of high density. This is useful when the clusters are irregular or intertwined, and when
 noise and outliers are present. 
 
+\textbf{DBSCAN} is a density-based algorithm.
+Density = number of points within a specified radius (Eps)
 
-K-means Clustering
-O Partitional clustering approach
-O Each cluster is associated with a centroid (center point)
-O Each point is assigned to the cluster with the closest
-centroid
-O Number of clusters, K, must be specified
-O The basic algorithm is very simple
+\begin{itemize}
+  \item A point is a core point if it has more than a specified number
+of points (MinPts) within Eps
 
-Hierarchical Clustering
-O Produces a set of nested clusters organized as a
-hierarchical tree
-O Can be visualized as a dendrogram
-? A tree like diagram that records the sequences of
+\item A border point has fewer than MinPts within Eps, but is in
+the neighborhood of a core point
+
+\item A noise point is any point that is not a core point or a border
+point. 
+  
+  
+\end{itemize}
+
+
+
+
+\subsection{Hierarchical Clustering}
+Produces a set of nested clusters organized as a
+hierarchical tree that can be visualized as a dendrogram, a tree like diagram that records the sequences of
 merges or splits
 
 
-DBSCAN is a density-based algorithm.
-? Density = number of points within a specified radius (Eps)
-? A point is a core point if it has more than a specified number
-of points (MinPts) within Eps
-‹ These are points that are at the interior of a cluster
-? A border point has fewer than MinPts within Eps, but is in
-the neighborhood of a core point
-? A noise point is any point that is not a core point or a border
-point. 
 
 
 
 
 
 A random forest is essentially a collection of decision trees, where each tree is slightly different from the others. The idea behind random forests is that each tree might do a relatively good job of predicting, but will likely overfit on part of the data. If we build many trees, all of which work well and overfit in different ways, we can reduce the amount of overfitting by averaging their results. 
-Next, a decision tree is built based on this newly created dataset. However, the algorithm we described for the decision tree is slightly modified. Instead of looking for the best test for each node, in each node the algorithm randomly selects a subset of the features, and it looks for the best possible test involving one of these features. The number of features that are selected is controlled by the max_features parameter. This selection of a subset of features is repeated separately in each node, so that each node in a tree can make a decision using a different subset of the features.
+Next, a decision tree is built based on this newly created dataset. However, the algorithm we described for the decision tree is slightly modified. Instead of looking for the best test for each node, in each node the algorithm randomly selects a subset of the features, and it looks for the best possible test involving one of these features. The number of features that are selected is controlled by the parameter. This selection of a subset of features is repeated separately in each node, so that each node in a tree can make a decision using a different subset of the features.
 
 
 
-?To build a tree, we first take what is called a bootstrap sample of our data. That is, from our n_samples data points, we repeatedly draw an example randomly with replacement (meaning the same sample can be picked multiple times), n_samples times. This will create a dataset that is as big as the original dataset, but some data points will be missing from it (approximately one third), and some will be repeated.?
+To build a tree, we first take what is called a bootstrap sample of our data. That is, from our $n$ data points, we repeatedly draw an example randomly with replacement (meaning the same sample can be picked multiple times), $n$ times. This will create a dataset that is as big as the original dataset, but some data points will be missing from it (approximately one third), and some will be repeated.
 
-Excerpt From: Andreas C. Müller and Sarah Guido. ?Introduction to Machine Learning with Python.? iBooks. 
+
 
 
 Multilayer perceptrons (MLPs) are also known as (vanilla) feed-forward neural networks, or sometimes just neural networks.
@@ -297,6 +279,6 @@ MLPs can be viewed as generalizations of linear models that perform multiple sta
 
 In an MLP this process of computing weighted sums is repeated multiple times, first computing hidden units that represent an intermediate processing step, which are again combined using weighted sums to yield the final result
 
-This model has a lot more coefficients (also called weights) to learn: there is one between every input and every hidden unit (which make up the hidden layer), and one between every unit in the hidden layer and the output. After computing a weighted sum for each hidden unit, a nonlinear function is applied to the result?usually the rectifying nonlinearity (also known as rectified linear unit or relu) or the tangens hyperbolicus (tanh). The result of this function is then used in the weighted sum that computes the output
+This model has a lot more coefficients (also called weights) to learn: there is one between every input and every hidden unit (which make up the hidden layer), and one between every unit in the hidden layer and the output. After computing a weighted sum for each hidden unit, a nonlinear function is applied to the result. The result of this function is then used in the weighted sum that computes the output
 
 \end{document}  
