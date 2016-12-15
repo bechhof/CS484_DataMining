@@ -1,0 +1,302 @@
+\documentclass[12pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{CS 484 Final Exam Review}
+\author{Nathaniel Bechhofer}
+
+\begin{document}
+\maketitle
+
+
+\section{Types of Attributes}
+
+\begin{itemize}
+\item \textbf{Categorical (Qualitative) attributes}
+\begin{itemize}
+\item \textbf{Nominal attributes}: Only naming. Examples include zip codes, gender
+\item \textbf{Ordinal attributes}: Also includes order. Examples include year of birth, street numbers
+\end{itemize}
+\item \textbf{Numeric (Quantitative) attributes}
+\begin{itemize}
+\item \textbf{Interval attributes}: Meaningful units which allow comparison of differences between values. Examples include dates, temperature
+\item \textbf{Ratio attributes}: Also includes meaningfulness of ratios. Examples include income, height, age
+\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item \textbf{Discrete attributes}: Can be categorical or numeric (e.g. counts), but has a finite (or countably infinite, which means corresponding to any integer) number of possible values. Examples include number of children, marital status, gender
+\begin{itemize}
+\item Special case is \textbf{binary attrubutes}, which can only take on two values such as yes/no or 0/1
+\end{itemize}
+\item \textbf{Continuous attributes}: Real numbers, which imply a potentially infinite number of possible values. Examples include height, weight, temperature
+\end{itemize}
+
+\section{Noise vs Outliers}
+
+Noise is anything that is not the true data, also defined as the random component of a measurement error. It may have values close to the true data. An outlier is something that is much different than the other values with regards to either its characteristics or attribute values.
+
+\section{Measures of Similarity or Dissimilarity}
+
+\subsection{Euclidean Distance}
+The \textbf{Euclidean distance} between two points $x$ and $y$ is given as:
+\begin{equation*}
+\sqrt{ \sum_{k=1}^n (x_k - y_k)^2 }
+\end{equation*}
+where $n$ is the number of dimensions and $x_k$ and $y_k$ are the $k^{th}$ attributes of $x$ and $y$.
+
+\subsection{Hamming Distance}
+The \textbf{Hamming distance} is the number of bits that are different between two objects that have only binary attributes. (Manhattan distance is Euclidean distance without the squared and square root.)
+
+\subsection{Binary Similarity Measures}
+If we have two objects $x$ and $y$ that consist of $n$ binary attributes, we can denote counts $f_{ij}$ which measure how many attributes measure 0 or 1 for the $x$ and $y$ objects. 
+
+This gives us a way to write the formula for the \textbf{simple matching coefficient}:
+\begin{equation*}
+SMC = \frac{\text{number of matching attribute values}}{\text{number of attributes}} = \frac{f_{11} + f_{00}}{f_{01} + f_{10} + f_{11} + f_{00}}
+\end{equation*}
+
+
+If binary attributes are asymmetric, one can use the \textbf{Jaccard coefficient}:
+\begin{equation*}
+J = \frac{\text{number of matching presences}}{\text{number of attributes not involved in 00 matches}} = \frac{f_{11}}{f_{01} + f_{10} + f_{11}}
+\end{equation*}
+
+\subsection{Cosine Similarity}
+For non-binary vectors, we can do something similar to the Jaccard with the \textbf{cosine similarity}:
+\begin{equation*}
+\cos(x,y)={x \cdot y \over \|x \| \| y \|}={\frac {\sum \limits _{i=1}^{n}{x_{i}y_{i}}}{{\sqrt {\sum \limits _{i=1}^{n}{x_{i}^{2}}}}{\sqrt {\sum \limits _{i=1}^{n}{y_{i}^{2}}}}}}
+\end{equation*}
+
+
+\subsection{Correlation}
+
+We can use \textbf{Pearson's correlation coefficient} (often denoted using $\rho$) to measure the linear relationship between attributes of many types of objects. 
+
+\begin{equation*}
+\rho _{X,Y}={\frac {\operatorname {cov} (X,Y)}{s _{X}s _{Y}}}
+\end{equation*}
+
+\section{Impurity Measures}
+
+\subsection{Gini}
+The Gini index is defined as $1-\sum_{i=0}^{c-1} [p(i|t)]^2$ where $c$ is the number of classes and $p(i|t)$ denotes the fraction of records belonging to class $i$ at a given node $t$.
+For multiway split, we calculate using the weighted average for each category.
+
+\subsection{Entropy}
+Entropy is defined as $-\sum_{i=0}^{c-1} p(i|t) \log_2 p(i|t)$ where $c$ is the number of classes and $p(i|t)$ denotes the fraction of records belonging to class $i$ at a given node $t$. (We consider $0 \log_2 0 = 0$ for entropy calculations.)
+
+\subsection{Gain}
+The gain can be found using a formula:
+\begin{equation*}
+I(parent) - \sum_{j=1}^k \frac{N(v_j)}{N} I(v_j)
+\end{equation*}
+where $I(.)$ is the impurity measure of a given node, $N$ is the number of records at the parent node, $k$ is the number of attribute values, and $N(v_j)$ is the number of records associated with the child node $v_j$.
+Gain is called \textbf{information gain} when using entropy as the impurity measure.
+
+
+\section{Bayes, the theorem}
+One standard form:
+\begin{equation*}
+P(A\mid B)={\frac {P(B\mid A)\,P(A)}{P(B\mid A)P(A)+P(B\mid \neg A)P(\neg A)}}
+\end{equation*}
+
+\section{Naive Bayes}
+
+\subsection{Conditional independence}
+Naive Bayes only works with conditional independence. $X$ is conditionally independent of $Y$ given $Z$ if $P(X | Y, Z) = P(X | Z)$.
+
+\subsection{Classification}
+To choose how to classify a record, one merely finds the class that maximizes $P(Y) \prod_{i=1}^d P(X_i |Y)$.
+
+\subsection{M-estimate}
+If the classifier gets zeros, there may be an issue with categorization. An alternative uses the following formula:
+\begin{equation*}
+P(x_i | y_j) = \frac{n_c + mp}{n + m}
+\end{equation*}
+where $n$ is the total number of instances from class $y_j$, $n_c$ is the number of training examples from $y_j$ that take on the value $x_i$, $m$ is a parameter known as the equivalent sample size, and $p$ is a user-specified parameter. 
+
+\section{Association rules}
+
+In order to select interesting rules from the set of all possible association rules, constraints on various measures of significance and interest are used. The best-known constraints are minimum thresholds on support and confidence.
+
+Rule Evaluation Metrics
+? Support (s)
+‹ Fraction of transactions that contain
+both X and Y
+? Confidence (c)
+‹ Measures how often items in Y
+appear in transactions that
+contain X
+
+Apriori principle:
+? If an itemset is frequent, then all of its subsets must also
+be frequent
+
+
+Dimensionality Reduction: PCA
+O Goal is to find a projection that captures the
+largest amount of variation in data
+
+Minimum Description Length (MDL)
+
+Cost(Model,Data) = Cost(Data|Model) + Cost(Model)
+? Cost is the number of bits needed for encoding.
+? Search for the least costly model.
+O Cost(Data|Model) encodes the misclassification errors.
+O Cost(Model) uses node encoding (number of children)
+plus splitting condition encoding.
+
+
+Rule Coverage and Accuracy
+O Coverage of a rule:
+? Fraction of records
+that satisfy the
+antecedent of a rule
+O Accuracy of a rule:
+? Fraction of records
+that satisfy both the
+antecedent and
+consequent of a
+rule
+
+
+Characteristics of Rule-Based Classifier
+O Mutually exclusive rules
+? Classifier contains mutually exclusive rules if
+the rules are independent of each other
+? Every record is covered by at most one rule
+O Exhaustive rules
+? Classifier has exhaustive coverage if it
+accounts for every possible combination of
+attribute values
+? Each record is covered by at least one rule
+
+Nearest-Neighbor Classifiers
+O Requires three things
+? The set of stored records
+? Distance Metric to compute
+distance between records
+? The value of k, the number of
+nearest neighbors to retrieve
+O To classify an unknown record:
+? Compute distance to other
+training records
+? Identify k nearest neighbors
+? Use class labels of nearest
+neighbors to determine the
+class label of unknown record
+(e.g., by taking majority vote)
+
+O Compute distance between two points:
+? Euclidean distance
+O Determine the class from nearest neighbor list
+? take the majority vote of class labels among
+the k-nearest neighbors
+? Weigh the vote according to distance
+‹ weight factor, w = 1/d2
+
+
+Bagging
+O Sampling with replacement
+Build classifier on each bootstrap sample
+O Each sample has probability (1 ? 1/n)n of being
+selected
+
+Boosting
+O An iterative procedure to adaptively change
+distribution of training data by focusing more on
+previously misclassified records
+? Initially, all N records are assigned equal
+weights
+? Unlike bagging, weights may change at the
+end of boosting round
+Records that are wrongly classified will have their
+weights increased
+O Records that are classified correctly will have
+their weights decreased
+
+
+What is Cluster Analysis?
+O Finding groups of objects such that the objects in a group
+will be similar (or related) to one another and different
+from (or unrelated to) the objects in other groups
+
+A clustering is a set of clusters
+
+Center-based
+? A cluster is a set of objects such that an object in a cluster is
+closer (more similar) to the ?center? of a cluster, than to the
+center of any other cluster
+? The center of a cluster is often a centroid, the average of all
+the points in the cluster, or a medoid, the most ?representative?
+point of a cluster 
+
+Contiguous Cluster (Nearest neighbor or
+Transitive)
+? A cluster is a set of points such that a point in a cluster is
+closer (or more similar) to one or more other points in the
+cluster than to any point not in the cluster.
+
+Density-based
+? A cluster is a dense region of points, which is separated by
+low-density regions, from other regions of high density.
+? Used when the clusters are irregular or intertwined, and when
+noise and outliers are present. 
+
+
+K-means Clustering
+O Partitional clustering approach
+O Each cluster is associated with a centroid (center point)
+O Each point is assigned to the cluster with the closest
+centroid
+O Number of clusters, K, must be specified
+O The basic algorithm is very simple
+
+Hierarchical Clustering
+O Produces a set of nested clusters organized as a
+hierarchical tree
+O Can be visualized as a dendrogram
+? A tree like diagram that records the sequences of
+merges or splits
+
+
+DBSCAN is a density-based algorithm.
+? Density = number of points within a specified radius (Eps)
+? A point is a core point if it has more than a specified number
+of points (MinPts) within Eps
+‹ These are points that are at the interior of a cluster
+? A border point has fewer than MinPts within Eps, but is in
+the neighborhood of a core point
+? A noise point is any point that is not a core point or a border
+point. 
+
+
+
+
+
+A random forest is essentially a collection of decision trees, where each tree is slightly different from the others. The idea behind random forests is that each tree might do a relatively good job of predicting, but will likely overfit on part of the data. If we build many trees, all of which work well and overfit in different ways, we can reduce the amount of overfitting by averaging their results. 
+Next, a decision tree is built based on this newly created dataset. However, the algorithm we described for the decision tree is slightly modified. Instead of looking for the best test for each node, in each node the algorithm randomly selects a subset of the features, and it looks for the best possible test involving one of these features. The number of features that are selected is controlled by the max_features parameter. This selection of a subset of features is repeated separately in each node, so that each node in a tree can make a decision using a different subset of the features.
+
+
+
+?To build a tree, we first take what is called a bootstrap sample of our data. That is, from our n_samples data points, we repeatedly draw an example randomly with replacement (meaning the same sample can be picked multiple times), n_samples times. This will create a dataset that is as big as the original dataset, but some data points will be missing from it (approximately one third), and some will be repeated.?
+
+Excerpt From: Andreas C. Müller and Sarah Guido. ?Introduction to Machine Learning with Python.? iBooks. 
+
+
+Multilayer perceptrons (MLPs) are also known as (vanilla) feed-forward neural networks, or sometimes just neural networks.
+The neural network model
+MLPs can be viewed as generalizations of linear models that perform multiple stages of processing to come to a decision.
+
+In an MLP this process of computing weighted sums is repeated multiple times, first computing hidden units that represent an intermediate processing step, which are again combined using weighted sums to yield the final result
+
+This model has a lot more coefficients (also called weights) to learn: there is one between every input and every hidden unit (which make up the hidden layer), and one between every unit in the hidden layer and the output. After computing a weighted sum for each hidden unit, a nonlinear function is applied to the result?usually the rectifying nonlinearity (also known as rectified linear unit or relu) or the tangens hyperbolicus (tanh). The result of this function is then used in the weighted sum that computes the output
+
+\end{document}  
