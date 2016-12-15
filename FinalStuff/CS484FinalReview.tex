@@ -40,7 +40,7 @@
 
 \section{Noise vs Outliers}
 
-Noise is anything that is not the true data, also defined as the random component of a measurement error. It may have values close to the true data. An outlier is something that is much different than the other values with regards to either its characteristics or attribute values.
+Noise is anything that is not the true data, also defined as the random component of a measurement error. It may have values close to the true data. An outlier is something that is much different than the other values with regards to either its characteristics or attribute values. \textbf{Anomalies} are typically defined as data points that don't fit a data model well.
 
 \section{Measures of Similarity or Dissimilarity}
 
@@ -210,6 +210,8 @@ their weights decreased
 
 \section{Cluster Analysis}
 
+\subsection{Vector quantization} Uses prototype vectors for clusters and each data point is given an index denoting its position in the table of prototype vectors.
+
 \subsection{Center-based Cluster}
 A cluster is a set of objects such that an object in a cluster is
 closer (more similar) to the center of a cluster, than to the
@@ -222,6 +224,8 @@ point of a cluster
 \textbf{K-means Clustering} is a partitional clustering approach where each cluster is associated with a centroid (center point) and each point is assigned to the cluster with the closest
 centroid.
 The Number of clusters, $K$, must be specified. The basic algorithm is very simple: just pick some centroids at random, assign points to the closest centroid, recompute the centroids, and keep going until the centroids don't change.
+
+The Voronoi diagram for a set of $K$ points in the plane is a partition of all the points of the plane into $K$ regions, such that every point (of the plane) is assigned to the closest point among the $K$ specified points. If we have $K$ $K$-means clusters, then the plane is divided into $K$ Voronoi regions that represent the points closest to each centroid.
 
 \subsection{Contiguous Cluster}
 A cluster is a set of points such that a point in a cluster is
@@ -256,6 +260,11 @@ point.
 Produces a set of nested clusters organized as a
 hierarchical tree that can be visualized as a dendrogram, a tree like diagram that records the sequences of
 merges or splits
+
+For \textbf{single-link}, use proximity between closest two points that are in different clusters
+
+For \textbf{complete-link}, use proximity between furthest two points that are in different clusters
+
 
 
 
